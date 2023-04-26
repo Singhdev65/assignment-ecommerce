@@ -1,15 +1,13 @@
-import { Footer, Header } from "../components";
+import { Footer, Header } from "../components"
 
 const MainLayout = props => {
   return (
     <div>
       <Header {...props} />
-      <div className="main">
-        {props.children}
-      </div>
+      {props.children}
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default MainLayout;
+export default MainLayout

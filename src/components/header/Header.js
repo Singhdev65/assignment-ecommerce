@@ -1,39 +1,77 @@
-import React from "react"
-import { AppbarContainer, AppbarHeader, MyList } from "./header.styles"
+import { FaShoppingCart } from "react-icons/fa"
+import { AiFillDelete } from "react-icons/ai"
 import {
-    Box,
-    Divider,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Stack,
-    Typography,
-  } from "@mui/material";
-  import PersonIcon from "@mui/icons-material/Person";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import SearchIcon from "@mui/icons-material/Search";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+  Badge,
+  Button,
+  Container,
+  Dropdown,
+  FormControl,
+  Nav,
+  Navbar
+} from "react-bootstrap"
+import { Link, useLocation } from "react-router-dom"
+import { CartState } from "../../context/Context"
 
-export default function Header() {
+const Header = () => {
+  const {
+    state: { cart },
+    dispatch
+  } = CartState()
+
   return (
-    <AppbarContainer>
-    <AppbarHeader variant="h4">My Bags</AppbarHeader>
-    <MyList type="row">
-      <ListItemText primary="Home" />
-      <ListItemText primary="Categories" />
-      <ListItemText primary="Products" />
-      <ListItemText primary="About us" />
-      <ListItemText primary="Contact us" />
-      <ListItemButton 
-      // onClick={() => setShowSearchBox(true)}
-      >
-        <ListItemIcon>
-          <SearchIcon />
-        </ListItemIcon>
-      </ListItemButton>
-        </MyList>
-     {/* <Actions matches={matches} />    */}
-  </AppbarContainer>
+    <Navbar bg='dark' variant='dark' style={{ height: 80 }}>
+      <Container>
+        <Navbar.Brand className='headerContainer'>
+          <Link to='/'>Shopping Cart</Link>
+        </Navbar.Brand>
+        <Nav className='navbar'>
+          <Dropdown alignRight>
+            <Dropdown.Toggle variant='success'>
+              <FaShoppingCart color='white' fontSize='25px' />
+              <Badge>{cart.length}</Badge>
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu style={{ minWidth: "355px" }}>
+              {cart.length > 0 ? (
+                <>
+                  {cart.map(prod => (
+                    <span className='cartitem' key={prod.id}>
+                      <img
+                        src={prod.image}
+                        className='cartItemImg'
+                        alt={prod.name}
+                      />
+                      <div className='cartItemDetail'>
+                        <span>{prod.name}</span>
+                        <span>₹ {prod.price.split(".")[0]}</span>
+                      </div>
+                      <AiFillDelete
+                        fontSize='20px'
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          dispatch({
+                            type: "REMOVE_FROM_CART",
+                            payload: prod
+                          })
+                        }
+                      />
+                    </span>
+                  ))}
+                  <Link to='/cart'>
+                    <Button style={{ width: "95%", margin: "0 10px" }}>
+                      Go To Cart
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <span style={{ padding: 10 }}>Cart is Empty!</span>
+              )}
+            </Dropdown.Menu>
+          </Dropdown>
+        </Nav>
+      </Container>
+    </Navbar>
   )
 }
+
+export default Header
